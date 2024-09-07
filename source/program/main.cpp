@@ -3,6 +3,18 @@
 #include "utils.hpp"
 #include "sead.h"
 #include "binaryoffsethelper.h"
+#include <cstring>
+
+namespace agl::lyr {
+
+struct Layer {
+    char _whatever[0x89];
+    u8 flag;
+    char _whatever2[0x56];
+    char* name;
+};
+
+} // namespace agl::lyr
 
 // GraphicsModule CreateArg
 struct CreateArg {
@@ -42,7 +54,7 @@ HOOK_DEFINE_INLINE(GetCreateArg) {
 
 HOOK_DEFINE_INLINE(EnableDebugDraw) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        char buf[0x40];
+        char buf[0x110];
         if (*sDefaultFont == nullptr) {
             nn::os::LockMutex(&gInitMutex);
             if (*sDefaultFont == nullptr) {
@@ -55,7 +67,10 @@ HOOK_DEFINE_INLINE(EnableDebugDraw) {
             PRINT("Failed to init default font")
             return;
         }
-        ctx->W[8] = 0x28;
+        if (strncmp("Tool 2D Super", reinterpret_cast<agl::lyr::Layer*>(ctx->X[21])->name, 0x100) == 0) {
+            reinterpret_cast<agl::lyr::Layer*>(ctx->X[21])->flag |= (1 << 5);
+            ctx->W[8] = 0x28;
+        }
     }
 };
 
@@ -67,10 +82,32 @@ HOOK_DEFINE_INLINE(FixFlag) {
 
 HOOK_DEFINE_INLINE(TestPrint) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        TextWriterPrintf(
-            reinterpret_cast<sead::TextWriter*>(ctx->X[21]),
-            "Hello World"
-        );
+        sead::TextWriter* writer = reinterpret_cast<sead::TextWriter*>(ctx->X[21]);
+        static sead::Vector2f cursor{ 0.f, 0.f };
+        static sead::Color4f color{ .5f, .25f, 1.f, 1.f };
+        // yes I know I should've just included the sead decomp to have proper assignment operators but I'm lazy :)
+        writer->mCursor.x = cursor.x;
+        writer->mCursor.y = cursor.y;
+        writer->mColor.r = color.r;
+        writer->mColor.g = color.g;
+        writer->mColor.b = color.b;
+        writer->mColor.a = color.a;
+        TextWriterPrintf(writer, "Hello World");
+        if (cursor.x < 100.f) {
+            cursor.x += 3.f;
+        } else {
+            cursor.x -= 200.f;
+        }
+        if (cursor.y < 100.f) {
+            cursor.y += 3.f;
+        } else {
+            cursor.y -= 200.f;
+        }
+        if (color.g < 1.f) {
+            color.g += .1f;
+        } else {
+            color.g = .25f;
+        }
     }
 };
 
@@ -131,7 +168,7 @@ extern "C" void exl_main(void* x0, void* x1) {
     StealHeap::InstallAtOffset(sStealHeapOffsets[sGameVersion]);
     GetCreateArg::InstallAtOffset(sGetCreateArgOffsets[sGameVersion]);
     EnableDebugDraw::InstallAtOffset(sEnableDebugDrawOffsets[sGameVersion]);
-    FixFlag::InstallAtOffset(sFixFlagOffsets[sGameVersion]);
+    // FixFlag::InstallAtOffset(sFixFlagOffsets[sGameVersion]);
     TestPrint::InstallAtOffset(sTestPrintOffsets[sGameVersion]);
 
     return;
