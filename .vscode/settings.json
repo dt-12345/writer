@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "format": "cpp",
+        "cstdint": "cpp",
+        "chrono": "cpp",
+        "random": "cpp",
+        "typeinfo": "cpp",
+        "tuple": "cpp",
+        "array": "cpp"
+    }
+}
