@@ -123,8 +123,8 @@ extern "C" void exl_main(void* x0, void* x1) {
 
     using PrintfFunc = void (sead::TextWriter*, const char*, ...);
     using CreateFunc = void (sead::Heap*, CreateArg&);
-    TextWriterPrintf = reinterpret_cast<PrintfFunc*>(reinterpret_cast<void*>(exl::util::modules::GetTargetOffset(sTextWriterPrintfOffsets[sGameVersion])));
-    CreateDebugRenderers = reinterpret_cast<CreateFunc*>(reinterpret_cast<void*>(exl::util::modules::GetTargetOffset(sCreateDebugRendererOffsets[sGameVersion])));
+    TextWriterPrintf = reinterpret_cast<PrintfFunc*>(exl::util::modules::GetTargetOffset(sTextWriterPrintfOffsets[sGameVersion]));
+    CreateDebugRenderers = reinterpret_cast<CreateFunc*>(exl::util::modules::GetTargetOffset(sCreateDebugRendererOffsets[sGameVersion]));
 
     sDefaultFont = reinterpret_cast<void**>(exl::util::modules::GetTargetOffset(sDefaultFontOffsets[sGameVersion]));
 
