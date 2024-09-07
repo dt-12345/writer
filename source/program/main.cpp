@@ -24,9 +24,12 @@ CreateArg gCreateArg{};
 
 static int sGameVersion = 5;
 
+nn::os::MutexType gInitMutex;
+
 HOOK_DEFINE_INLINE(StealHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
         gStolenHeap = reinterpret_cast<sead::Heap*>(ctx->X[sGameVersion == 0 ? 19 : 22]);
+        // I want to initialize the font + renderer here but for some reason the text will not render if I do?
     }
 };
 
@@ -41,8 +44,12 @@ HOOK_DEFINE_INLINE(EnableDebugDraw) {
     static void Callback(exl::hook::InlineCtx* ctx) {
         char buf[0x40];
         if (*sDefaultFont == nullptr) {
-            PRINT("Default font is null, attempting to initialize")
-            CreateDebugRenderers(gStolenHeap, gCreateArg);
+            nn::os::LockMutex(&gInitMutex);
+            if (*sDefaultFont == nullptr) {
+                PRINT("Default font is null, attempting to initialize")
+                CreateDebugRenderers(gStolenHeap, gCreateArg);
+            }
+            nn::os::UnlockMutex(&gInitMutex);
         }
         if (*sDefaultFont == nullptr) {
             PRINT("Failed to init default font")
@@ -102,8 +109,6 @@ static constexpr u64 sTestPrintOffsets[6] = {
 extern "C" void exl_main(void* x0, void* x1) {
     /* Setup hooking enviroment */
     exl::hook::Initialize();
-    
-    const u64 main = exl::util::GetMainModuleInfo().m_Total.m_Start;
 
     sGameVersion = InitializeAppVersion();
     if (sGameVersion == 0xffffffff || sGameVersion > 5) {
@@ -114,12 +119,14 @@ extern "C" void exl_main(void* x0, void* x1) {
     char buf[0x8];
     PRINT("%u", sGameVersion);
 
+    nn::os::InitializeMutex(&gInitMutex, true, 0);
+
     using PrintfFunc = void (sead::TextWriter*, const char*, ...);
     using CreateFunc = void (sead::Heap*, CreateArg&);
-    TextWriterPrintf = reinterpret_cast<PrintfFunc*>(reinterpret_cast<void*>(main + sTextWriterPrintfOffsets[sGameVersion]));
-    CreateDebugRenderers = reinterpret_cast<CreateFunc*>(reinterpret_cast<void*>(main + sCreateDebugRendererOffsets[sGameVersion]));
+    TextWriterPrintf = reinterpret_cast<PrintfFunc*>(reinterpret_cast<void*>(exl::util::modules::GetTargetOffset(sTextWriterPrintfOffsets[sGameVersion])));
+    CreateDebugRenderers = reinterpret_cast<CreateFunc*>(reinterpret_cast<void*>(exl::util::modules::GetTargetOffset(sCreateDebugRendererOffsets[sGameVersion])));
 
-    sDefaultFont = reinterpret_cast<void**>(main + sDefaultFontOffsets[sGameVersion]);
+    sDefaultFont = reinterpret_cast<void**>(exl::util::modules::GetTargetOffset(sDefaultFontOffsets[sGameVersion]));
 
     StealHeap::InstallAtOffset(sStealHeapOffsets[sGameVersion]);
     GetCreateArg::InstallAtOffset(sGetCreateArgOffsets[sGameVersion]);
