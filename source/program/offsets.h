@@ -7,11 +7,11 @@ static constexpr u64 sTextWriterPrintfOffsets[6] = {
 };
 
 static constexpr u64 sTextWriterCtorOffsets[6] = {
-    0, 0, 0, 0, 0, 0x010ad510
+    0x0108ed1c, 0x010bfdf8, 0x010c85b8, 0x010b4648, 0x010ab4d8, 0x010ad510
 };
 
 static constexpr u64 sTextWriterSetupGraphicsOffsets[6] = {
-    0, 0, 0, 0, 0, 0x01888e6c
+    0x0184c778, 0x0189917c, 0x01898d9c, 0x0188e060, 0x0187a8d4, 0x01888e6c
 };
 
 static constexpr u64 sCreateDebugRendererOffsets[6] = {
@@ -35,5 +35,5 @@ static constexpr u64 sEnableDebugDrawOffsets[6] = {
 };
 
 static constexpr u64 sDebugDrawOffsets[6] = {
-    0, 0, 0, 0, 0, 0x0081911c
+    0x00858998, 0x0084002c, 0x007859e0, 0x00808efc, 0x007d2ae4, 0x0081911c
 };
