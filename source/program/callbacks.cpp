@@ -2,13 +2,33 @@
 
 #include "callbacks.h"
 
-void drawUI2D(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {}
-void drawUI2DOverlay(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {}
-void drawTool2D(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {}
+void drawUI2D(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
+    sead::TextWriter writer = initializeTextWriter(info);
+    writer.setCursorFromTopLeft({ writer.getWidth() * .05f, writer.getHeight() * .05f });
+    TextWriterPrintf(&writer, "Hi From UI 2D");
+}
+void drawUI2DOverlay(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
+    sead::TextWriter writer = initializeTextWriter(info);
+    writer.setCursorFromTopLeft({ writer.getWidth() * .05f, writer.getHeight() * .1f });
+    TextWriterPrintf(&writer, "Hi From UI 2D Overlay");
+}
+void drawTool2D(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
+    sead::TextWriter writer = initializeTextWriter(info);
+    writer.setCursorFromTopLeft({ writer.getWidth() * .05f, writer.getHeight() * .15f });
+    TextWriterPrintf(&writer, "Hi From Tool 2D");
+}
 void drawTool2DSuper(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
     sead::TextWriter writer = initializeTextWriter(info);
-    writer.setCursor(0.f, 0.f);
-    TextWriterPrintf(&writer, "Hello World");
+    writer.setCursorFromTopLeft({ writer.getWidth() * .05f, writer.getHeight() * .2f});
+    TextWriterPrintf(&writer, "Hi from Tool 2D Super");
 }
-void drawMain3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {}
-void drawUI3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {}
+void drawMain3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
+    sead::TextWriter writer = initializeTextWriter(info);
+    writer.setCursorFromTopLeft({ writer.getWidth() * .05f, writer.getHeight() * .25f });
+    TextWriterPrintf(&writer, "Hi From Main 3D 0");
+}
+void drawUI3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
+    sead::TextWriter writer = initializeTextWriter(info);
+    writer.setCursorFromTopLeft({ writer.getWidth() * .05f, writer.getHeight() * .3f });
+    TextWriterPrintf(&writer, "Hi From UI 3D 0");
+}
