@@ -17,6 +17,7 @@ SD_OUT := atmosphere/contents/$(PROGRAM_ID)/exefs
 
 # Set load kind specific variables.
 ifeq ($(LOAD_KIND), Module)
+    NNSDK := 1
     LOAD_KIND_ENUM := 2
     BINARY_NAME := subsdk8 # TODO: support subsdkX?
     SPECS_NAME := module.specs
@@ -33,7 +34,7 @@ endif
 .PHONY: clean all
 
 # Built internal C flags variable.
-EXL_CFLAGS   := $(C_FLAGS) -DEXL_LOAD_KIND=$(LOAD_KIND) -DEXL_LOAD_KIND_ENUM=$(LOAD_KIND_ENUM) -DEXL_PROGRAM_ID=0x$(PROGRAM_ID)
+EXL_CFLAGS   := $(C_FLAGS) -DEXL_LOAD_KIND=$(LOAD_KIND) -DEXL_LOAD_KIND_ENUM=$(LOAD_KIND_ENUM) -DEXL_PROGRAM_ID=0x$(PROGRAM_ID) -DNNSDK=$(NNSDK)
 EXL_CXXFLAGS := $(CXX_FLAGS)
 
 # Export all of our variables to sub-makes and sub-processes.

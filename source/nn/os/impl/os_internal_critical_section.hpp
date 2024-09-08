@@ -25,37 +25,36 @@
 namespace nn::os::detail {
 
     class InternalCriticalSection {
-        private:
-            InternalCriticalSectionImplByHorizon m_impl;
-        public:
-            constexpr InternalCriticalSection() : m_impl() { /* ... */ }
+      private:
+        InternalCriticalSectionImplByHorizon m_impl;
 
-            constexpr void Initialize() { m_impl.Initialize(); }
-            constexpr void Finalize()   { m_impl.Finalize(); }
+      public:
+        constexpr InternalCriticalSection() : m_impl() { /* ... */
+        }
 
-            void Enter()    { return m_impl.Enter(); }
-            bool TryEnter() { return m_impl.TryEnter(); }
-            void Leave()    { return m_impl.Leave(); }
+        constexpr void Initialize() { m_impl.Initialize(); }
+        constexpr void Finalize() { m_impl.Finalize(); }
 
-            bool IsLockedByCurrentThread() const { return m_impl.IsLockedByCurrentThread(); }
+        void Enter() { return m_impl.Enter(); }
+        bool TryEnter() { return m_impl.TryEnter(); }
+        void Leave() { return m_impl.Leave(); }
 
-            ALWAYS_INLINE void Lock()    { return this->Enter(); }
-            ALWAYS_INLINE bool TryLock() { return this->TryEnter(); }
-            ALWAYS_INLINE void Unlock()  { return this->Leave(); }
+        bool IsLockedByCurrentThread() const { return m_impl.IsLockedByCurrentThread(); }
 
-            ALWAYS_INLINE void lock()     { return this->Lock(); }
-            ALWAYS_INLINE bool try_lock() { return this->TryLock(); }
-            ALWAYS_INLINE void unlock()   { return this->Unlock(); }
+        ALWAYS_INLINE void Lock() { return this->Enter(); }
+        ALWAYS_INLINE bool TryLock() { return this->TryEnter(); }
+        ALWAYS_INLINE void Unlock() { return this->Leave(); }
 
-            InternalCriticalSectionImplByHorizon *Get() {
-                return std::addressof(m_impl);
-            }
+        ALWAYS_INLINE void lock() { return this->Lock(); }
+        ALWAYS_INLINE bool try_lock() { return this->TryLock(); }
+        ALWAYS_INLINE void unlock() { return this->Unlock(); }
 
-            const InternalCriticalSectionImplByHorizon *Get() const {
-                return std::addressof(m_impl);
-            }
+        InternalCriticalSectionImplByHorizon* Get() { return std::addressof(m_impl); }
+
+        const InternalCriticalSectionImplByHorizon* Get() const { return std::addressof(m_impl); }
     };
 
-    using InternalCriticalSectionStorage = util::TypedStorage<InternalCriticalSection>;
+    /* TODO: storage. */
+    using InternalCriticalSectionStorage = InternalCriticalSection;
 
-}
+} // namespace nn::os::detail

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "lib.hpp"
-#include "nn.hpp"
+#include "types.h"
 
 const char GAME_VERSION_1_0_0[] = "1.0.0";
 const char GAME_VERSION_1_1_0[] = "1.1.0";

@@ -13,11 +13,11 @@ namespace nn::fs {
 
     /*
         Closes directory.
-        handle: Handle of directory to close. 
+        handle: Handle of directory to close.
     */
     void CloseDirectory(DirectoryHandle handle);
 
-    /* 
+    /*
         Read entries for a given opened directory into a provided buffer.
         entryCountOut: Pointer to write actual amount of entries read.
         entriesOut: Pointer to buffer containing (entryBufferLength) amount of DirectoryEntry
@@ -26,7 +26,7 @@ namespace nn::fs {
     */
     Result ReadDirectory(s64* entryCountOut, DirectoryEntry* entriesOut, DirectoryHandle handle, s64 entryBufferLength);
 
-    /* 
+    /*
         Creates a directory at  given path.
         path: Path to path to create.
     */
@@ -47,12 +47,14 @@ namespace nn::fs {
 
     /*
         TODO: ?
-        path: Path to the directory to be cleaned. 
+        path: Path to the directory to be cleaned.
     */
     Result CleanDirectoryRecursively(char const* path);
 
-    /* 
+    /*
         TODO: ?
     */
     Result RenameDirectory(char const*, char const*);
-}
+
+    Result GetEntryType(nn::fs::DirectoryEntryType*, char const*);
+} // namespace nn::fs

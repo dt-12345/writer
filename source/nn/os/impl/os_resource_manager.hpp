@@ -22,38 +22,38 @@
 namespace nn::os::detail {
 
     class OsResourceManager {
-        private:
-        
-            TickManager m_tick_manager{};
-            
-        public:
-            OsResourceManager() = default;
+      private:
+        TickManager m_tick_manager{};
 
-            constexpr ALWAYS_INLINE TickManager &GetTickManager() { return m_tick_manager; }
+      public:
+        OsResourceManager() = default;
+
+        constexpr ALWAYS_INLINE TickManager& GetTickManager() { return m_tick_manager; }
     };
 
     class ResourceManagerHolder {
-        private:
-            static util::TypedStorage<OsResourceManager> s_resource_manager_storage;
-        private:
-            constexpr ResourceManagerHolder() { /* ... */ }
-        public:
-            static ALWAYS_INLINE void InitializeResourceManagerInstance() {
-                /* Construct the resource manager instance. */
-                util::ConstructAt(s_resource_manager_storage);
-            }
+      private:
+        static util::TypedStorage<OsResourceManager> s_resource_manager_storage;
 
-            static ALWAYS_INLINE OsResourceManager &GetResourceManagerInstance() {
-                return GetReference(s_resource_manager_storage);
-            }
+      private:
+        constexpr ResourceManagerHolder() { /* ... */
+        }
+
+      public:
+        static ALWAYS_INLINE void InitializeResourceManagerInstance() {
+            /* Construct the resource manager instance. */
+            util::ConstructAt(s_resource_manager_storage);
+        }
+
+        static ALWAYS_INLINE OsResourceManager& GetResourceManagerInstance() {
+            return GetReference(s_resource_manager_storage);
+        }
     };
 
-    ALWAYS_INLINE OsResourceManager &GetResourceManager() {
+    ALWAYS_INLINE OsResourceManager& GetResourceManager() {
         return ResourceManagerHolder::GetResourceManagerInstance();
     }
 
-    ALWAYS_INLINE TickManager &GetTickManager() {
-        return GetResourceManager().GetTickManager();
-    }
+    ALWAYS_INLINE TickManager& GetTickManager() { return GetResourceManager().GetTickManager(); }
 
-}
+} // namespace nn::os::detail

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nn/nn_common.hpp>
+#include <nx/types.h>
 
 namespace nn::fs {
 
@@ -23,7 +24,7 @@ namespace nn::fs {
     /* Bitfield to define the kinds of entries to open from a directory. */
     enum OpenDirectoryMode : u8 {
         OpenDirectoryMode_Directory = BIT(0),
-        OpenDirectoryMode_File      = BIT(1),
+        OpenDirectoryMode_File = BIT(1),
 
         OpenDirectoryMode_All = OpenDirectoryMode_Directory | OpenDirectoryMode_File,
     };
@@ -38,23 +39,21 @@ namespace nn::fs {
         u32 field_304;
         long m_FileSize;
     };
-    
+
     /* Mode for opening files. */
     enum OpenMode {
-        OpenMode_Read   = BIT(0),
-        OpenMode_Write  = BIT(1),
+        OpenMode_Read = BIT(0),
+        OpenMode_Write = BIT(1),
         OpenMode_Append = BIT(2),
 
-        OpenMode_ReadWrite  = OpenMode_Read | OpenMode_Write,
+        OpenMode_ReadWrite = OpenMode_Read | OpenMode_Write,
     };
 
     /* Options for reading. TODO: is this an enum? what for? */
     struct ReadOption {
         int _field_0;
 
-        static inline ReadOption MakeOption(int value) {
-            return {value};
-        }
+        static inline ReadOption MakeOption(int value) { return {value}; }
     };
 
     enum WriteOptionFlag {
@@ -70,4 +69,4 @@ namespace nn::fs {
             };
         }
     };
-};
+}; // namespace nn::fs

@@ -26,32 +26,27 @@
 namespace nn::os::detail {
 
     class InternalConditionVariable {
-        private:
-            InternalConditionVariableImplByHorizon m_impl;
-        public:
-            constexpr InternalConditionVariable() : m_impl() { /* ... */ }
+      private:
+        InternalConditionVariableImplByHorizon m_impl;
 
-            constexpr void Initialize() {
-                m_impl.Initialize();
-            }
+      public:
+        constexpr InternalConditionVariable() : m_impl() { /* ... */
+        }
 
-            void Signal() {
-                m_impl.Signal();
-            }
+        constexpr void Initialize() { m_impl.Initialize(); }
 
-            void Broadcast() {
-                m_impl.Broadcast();
-            }
+        void Signal() { m_impl.Signal(); }
 
-            void Wait(InternalCriticalSection *cs) {
-                m_impl.Wait(cs);
-            }
+        void Broadcast() { m_impl.Broadcast(); }
 
-            ConditionVariableStatus TimedWait(InternalCriticalSection *cs, const TimeoutHelper &timeout_helper) {
-                return m_impl.TimedWait(cs, timeout_helper);
-            }
+        void Wait(InternalCriticalSection* cs) { m_impl.Wait(cs); }
+
+        ConditionVariableStatus TimedWait(InternalCriticalSection* cs, const TimeoutHelper& timeout_helper) {
+            return m_impl.TimedWait(cs, timeout_helper);
+        }
     };
 
-    using InternalConditionVariableStorage = util::TypedStorage<InternalConditionVariable>;
+    /* TODO: storage. */
+    using InternalConditionVariableStorage = InternalConditionVariable;
 
-}
+} // namespace nn::os::detail

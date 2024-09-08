@@ -6,6 +6,8 @@
         "random": "cpp",
         "typeinfo": "cpp",
         "tuple": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "variant": "cpp"
     }
 }

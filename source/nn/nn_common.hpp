@@ -3,10 +3,6 @@
 #include "types.h"
 
 #include "util/util_typed_storage.hpp"
-#include "util/util_snprintf.hpp"
-
 
 typedef u32 Handle;
 typedef u32 Result;
-#define INVALID_HANDLE ((Handle) 0)
-#define BIT(n) (1U<<(n))

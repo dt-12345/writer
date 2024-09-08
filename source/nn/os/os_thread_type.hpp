@@ -16,22 +16,22 @@
 
 #pragma once
 
+#include "impl/os_internal_condition_variable.hpp"
+#include "impl/os_internal_critical_section.hpp"
 #include "nn/nn_common.hpp"
 #include "os_thread_api.hpp"
 #include "os_types.hpp"
-#include "impl/os_internal_condition_variable.hpp"
-#include "impl/os_internal_critical_section.hpp"
 
 namespace nn::os {
 
     struct ThreadType {
 
         enum State : u8 {
-            State_NotInitialized         = 0,
-            State_Initialized            = 1,
+            State_NotInitialized = 0,
+            State_Initialized = 1,
             State_DestroyedBeforeStarted = 2,
-            State_Started                = 3,
-            State_Terminated             = 4,
+            State_Started = 3,
+            State_Terminated = 4,
         };
 
         /* List stuff. */
@@ -45,7 +45,7 @@ namespace nn::os {
         void* user_stack;
         void* aliased_stack;
         size_t stack_size;
-        void *argument;
+        void* argument;
         ThreadFunction function;
 
         /* Unknown? */
@@ -62,8 +62,8 @@ namespace nn::os {
     };
     static_assert(sizeof(ThreadType) == 0x1C0, "");
 
-    constexpr inline s32 IdealCoreDontCare   = -1;
+    constexpr inline s32 IdealCoreDontCare = -1;
     constexpr inline s32 IdealCoreUseDefault = -2;
-    constexpr inline s32 IdealCoreNoUpdate   = -3;
+    constexpr inline s32 IdealCoreNoUpdate = -3;
 
-};
+}; // namespace nn::os

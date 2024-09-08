@@ -19,5 +19,5 @@
 namespace nn::os {
 
     using ThreadId = u64;
-    
+
 };

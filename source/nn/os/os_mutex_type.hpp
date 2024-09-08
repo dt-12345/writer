@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include "nn/nn_common.hpp"
 #include "impl/os_internal_critical_section.hpp"
+#include "nn/nn_common.hpp"
 
 namespace nn::os {
 
@@ -26,14 +26,14 @@ namespace nn::os {
     struct MutexType {
         enum State : u8 {
             State_NotInitialized = 0,
-            State_Initialized    = 1,
+            State_Initialized = 1,
         };
 
         State state;
         bool is_recursive;
         s32 lock_level;
         s32 nest_count;
-        ThreadType *owner_thread;
-        detail::InternalCriticalSectionStorage critical_section;
+        ThreadType* owner_thread;
+        detail::InternalCriticalSection critical_section;
     };
-}
+} // namespace nn::os

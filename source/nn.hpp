@@ -8,8 +8,7 @@
 #error "Cannot use nnSdk when not as a module!"
 #endif
 
-#include "nn/crypto.hpp"
-#include "nn/fs.hpp"
-#include "nn/oe.hpp"
-#include "nn/os.hpp"
+#include "nn/fs.h"
+#include "nn/oe.h"
+#include "nn/os.h"
 #include "nn/time.hpp"
