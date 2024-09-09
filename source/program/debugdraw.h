@@ -18,4 +18,4 @@ using PrintfFunc = void (sead::TextWriter*, const char*, ...);
 
 extern PrintfFunc* TextWriterPrintf;
 
-static DebugDrawMgr gDrawMgr;
+extern DebugDrawMgr gDrawMgr;
