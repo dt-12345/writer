@@ -37,12 +37,12 @@ HOOK_DEFINE_INLINE(EnableDebugDraw) {
 
 HOOK_DEFINE_REPLACE(DebugDraw) {
     static void Callback(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
-        if (strncmp("UI 2D", layer->getName(), 0x100) == 0) drawUI2D(layer, info);
-        if (strncmp("UI_2D_Overlay", layer->getName(), 0x100) == 0) drawUI2DOverlay(layer, info);
-        if (strncmp("Tool 2D", layer->getName(), 0x100) == 0) drawTool2D(layer, info);
-        if (strncmp("Tool 2D Super", layer->getName(), 0x100) == 0) drawTool2DSuper(layer, info);
-        if (strncmp("Main_3D_0", layer->getName(), 0x100) == 0) drawMain3D0(layer, info);
-        if (strncmp("UI_3D_0", layer->getName(), 0x100) == 0) drawUI3D0(layer, info);
+        if (strncmp("UI 2D", layer->getName(), 0x100) == 0 && gDrawMgr.isDrawUI2D()) drawUI2D(layer, info);
+        if (strncmp("UI_2D_Overlay", layer->getName(), 0x100) == 0 && gDrawMgr.isDrawUI2DOverlay()) drawUI2DOverlay(layer, info);
+        if (strncmp("Tool 2D", layer->getName(), 0x100) == 0 && gDrawMgr.isDrawTool2D()) drawTool2D(layer, info);
+        if (strncmp("Tool 2D Super", layer->getName(), 0x100) == 0 && gDrawMgr.isDrawTool2DSuper()) drawTool2DSuper(layer, info);
+        if (strncmp("Main_3D_0", layer->getName(), 0x100) == 0 && gDrawMgr.isDrawMain3D0()) drawMain3D0(layer, info);
+        if (strncmp("UI_3D_0", layer->getName(), 0x100) == 0 && gDrawMgr.isDrawUI3D0()) drawUI3D0(layer, info);
     }
 };
 
