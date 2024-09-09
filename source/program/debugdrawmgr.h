@@ -10,6 +10,7 @@
 
 namespace sead {
 class Heap;
+class FontBase;
 } // namespace sead
 
 // GraphicsModule CreateArg
@@ -28,22 +29,22 @@ public:
     }
 
     inline bool createDebugRenderer() {
-        if (*mDefaultFont) return true;
+        if (isInitFont()) return true;
         nn::os::LockMutex(&mInitMutex);
-        if (*mDefaultFont == nullptr) {
+        if (!isInitFont()) {
             char buf[0x40];
             PRINT("Default font is null, attempting to initialize")
             mCreateDebugRenderer(mHeap, mCreateArg);
         }
         nn::os::UnlockMutex(&mInitMutex);
-        return *mDefaultFont != nullptr;
+        return isInitFont();
     }
 
     const inline int version() const { return mGameVersion; }
     const inline bool isInitFont() const { return *mDefaultFont != nullptr; }
 
     inline void setHeap(sead::Heap* heap) { mHeap = heap; }
-    inline void setFont(void** font) { mDefaultFont = font; }
+    inline void setFont(sead::FontBase** font) { mDefaultFont = font; }
     inline void setCreateCallback(void (*callback)(sead::Heap*, CreateArg&)) { mCreateDebugRenderer = callback; }
     inline void initCreateArg(int a, int b) { mCreateArg.value0 = a; mCreateArg.value1 = b; }
 
@@ -67,7 +68,7 @@ private:
     sead::Heap* mHeap = nullptr;
     CreateArg mCreateArg{};
     nn::os::MutexType mInitMutex;
-    void** mDefaultFont = nullptr;
+    sead::FontBase** mDefaultFont = nullptr;
     void (*mCreateDebugRenderer)(sead::Heap*, CreateArg&);
     int mGameVersion;
     bool mDrawDebug = true;

@@ -70,7 +70,7 @@ void initDebugDrawer() {
     TextWriterCtor = reinterpret_cast<Ctor*>(exl::util::modules::GetTargetOffset(sTextWriterCtorOffsets[gDrawMgr.version()]));
     TextWriterSetupGraphics = reinterpret_cast<SetupGraphics*>(exl::util::modules::GetTargetOffset(sTextWriterSetupGraphicsOffsets[gDrawMgr.version()]));
     gDrawMgr.setCreateCallback(reinterpret_cast<CreateFunc*>(exl::util::modules::GetTargetOffset(sCreateDebugRendererOffsets[gDrawMgr.version()])));
-    gDrawMgr.setFont(reinterpret_cast<void**>(exl::util::modules::GetTargetOffset(sDefaultFontOffsets[gDrawMgr.version()])));
+    gDrawMgr.setFont(reinterpret_cast<sead::FontBase**>(exl::util::modules::GetTargetOffset(sDefaultFontOffsets[gDrawMgr.version()])));
 
     StealHeap::InstallAtOffset(sStealHeapOffsets[gDrawMgr.version()]);
     GetCreateArg::InstallAtOffset(sGetCreateArgOffsets[gDrawMgr.version()]);
