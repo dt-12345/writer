@@ -14,8 +14,4 @@
 void initDebugDrawer();
 sead::TextWriter initializeTextWriter(const agl::lyr::RenderInfo&);
 
-using PrintfFunc = void (sead::TextWriter*, const char*, ...);
-
-extern PrintfFunc* TextWriterPrintf;
-
 extern DebugDrawMgr gDrawMgr;

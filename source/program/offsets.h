@@ -117,3 +117,11 @@ static constexpr u64 sSetCameraOffsets[6] = {
 static constexpr u64 sSetDrawCtxOffsets[6] = {
     0, 0, 0, 0, 0, 0x022707c0
 };
+
+static constexpr u64 sGetResidentActorMgrOffsets[6] = {
+    0, 0, 0, 0, 0, 0x00cdd728
+};
+
+static constexpr u64 sFormalSceneOffsets[6] = {
+    0, 0, 0, 0, 0, 0x010d5024
+};

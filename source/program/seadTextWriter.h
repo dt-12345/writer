@@ -6,6 +6,14 @@
 #include <sead/gfx/seadColor.h>
 
 namespace sead {
+class TextWriter;
+} // namespace sead
+
+using PrintfFunc = void (sead::TextWriter*, const char*, ...);
+
+extern PrintfFunc* TextWriterPrintf;
+
+namespace sead {
 
 class Camera;
 class DrawContext;
@@ -16,6 +24,21 @@ public:
     ~TextWriter() { __vftable->dtor2(this); }
 
     // note these probably don't all exist, just for utility
+
+    void printf(const char* fmt, auto&&... args) {
+        TextWriterPrintf(this, fmt, std::forward<decltype(args)>(args)...);
+    }
+
+    void printDropShadow(const char* fmt, auto&&... args) {
+        sead::Vector2f offset(1.f, -1.f);
+        setColor(0.f, 0.f, 0.f, 1.f);
+        auto cursor = getCursor();
+        setCursor(cursor + offset);
+        printf(fmt, std::forward<decltype(args)>(args)...);
+        setColor(1.f, 1.f, 1.f, 1.f);
+        setCursor(cursor);
+        printf(fmt, std::forward<decltype(args)>(args)...);
+    }
     
     void setProjectionAndCamera(Projection* projection, Camera* camera) { mProjection = projection; mCamera = camera; }
     void setViewport(Viewport* viewport) { mViewport = viewport; }

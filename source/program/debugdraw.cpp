@@ -8,24 +8,6 @@
 PrintfFunc* TextWriterPrintf;
 DebugDrawMgr gDrawMgr;
 
-BeginFunc* Begin;
-EndFunc* End;
-DrawQuadFunc* DrawQuad;
-DrawQuad2Func* DrawQuad2;
-DrawBoxFunc* DrawBox;
-DrawWireCubeFunc* DrawWireCube;
-DrawLineFunc* DrawLine;
-DrawSphere4x8Func* DrawSphere4x8;
-DrawSphere8x16Func* DrawSphere8x16;
-DrawDisk32Func* DrawDisk32;
-DrawCircle32Func* DrawCircle32;
-DrawCylinder16Func* DrawCylinder16;
-DrawCylinder32Func* DrawCylinder32;
-SetModelMtxFunc* SetModelMtx;
-SetProjectionFunc* SetProjection;
-SetCameraFunc* SetCamera;
-SetDrawCtxFunc* SetDrawCtx;
-
 HOOK_DEFINE_INLINE(StealHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
         gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[gDrawMgr.version() == 0 ? 19 : 22]));
@@ -85,30 +67,15 @@ void initDebugDrawer() {
     using CreateFunc = void (sead::Heap*, CreateArg&);
     using Ctor = void (sead::TextWriter*, sead::DrawContext*, sead::Viewport*);
     using SetupGraphics = void (sead::DrawContext*);
+
+    #define OFFSET(offsets) exl::util::modules::GetTargetOffset((offsets)[gDrawMgr.version()])
     TextWriterPrintf = reinterpret_cast<PrintfFunc*>(OFFSET(sTextWriterPrintfOffsets));
     TextWriterCtor = reinterpret_cast<Ctor*>(OFFSET(sTextWriterCtorOffsets));
     TextWriterSetupGraphics = reinterpret_cast<SetupGraphics*>(OFFSET(sTextWriterSetupGraphicsOffsets));
     gDrawMgr.setCreateCallback(reinterpret_cast<CreateFunc*>(OFFSET(sCreateDebugRendererOffsets)));
     gDrawMgr.setFont(reinterpret_cast<sead::FontBase**>(OFFSET(sDefaultFontOffsets)));
     gDrawMgr.setPrimitiveRenderer(reinterpret_cast<sead::PrimitiveRenderer**>(OFFSET(sPrimitiveRendererOffsets)));
-
-    Begin = reinterpret_cast<BeginFunc*>(OFFSET(sBeginOffsets));
-    End = reinterpret_cast<EndFunc*>(OFFSET(sEndOffsets));
-    DrawQuad = reinterpret_cast<DrawQuadFunc*>(OFFSET(sDrawQuadOffsets));
-    DrawQuad2 = reinterpret_cast<DrawQuad2Func*>(OFFSET(sDrawQuad2Offsets));
-    DrawBox = reinterpret_cast<DrawBoxFunc*>(OFFSET(sDrawBoxOffsets));
-    DrawWireCube = reinterpret_cast<DrawWireCubeFunc*>(OFFSET(sDrawWireCubeOffsets));
-    DrawLine = reinterpret_cast<DrawLineFunc*>(OFFSET(sDrawLineOffsets));
-    DrawSphere4x8 = reinterpret_cast<DrawSphere4x8Func*>(OFFSET(sDrawSphere4x8Offsets));
-    DrawSphere8x16 = reinterpret_cast<DrawSphere8x16Func*>(OFFSET(sDrawSphere8x16Offsets));
-    DrawDisk32 = reinterpret_cast<DrawDisk32Func*>(OFFSET(sDrawDisk32Offsets));
-    DrawCircle32 = reinterpret_cast<DrawCircle32Func*>(OFFSET(sDrawCircle32Offsets));
-    DrawCylinder16 = reinterpret_cast<DrawCylinder16Func*>(OFFSET(sDrawCylinder16Offsets));
-    DrawCylinder32 = reinterpret_cast<DrawCylinder32Func*>(OFFSET(sDrawCylinder32Offsets));
-    SetModelMtx = reinterpret_cast<SetModelMtxFunc*>(OFFSET(sSetModelMtxOffsets));
-    SetProjection = reinterpret_cast<SetProjectionFunc*>(OFFSET(sSetProjectionOffsets));
-    SetCamera = reinterpret_cast<SetCameraFunc*>(OFFSET(sSetCameraOffsets));
-    SetDrawCtx = reinterpret_cast<SetDrawCtxFunc*>(OFFSET(sSetDrawCtxOffsets));
+    #undef OFFSET
 
     StealHeap::InstallAtOffset(sStealHeapOffsets[gDrawMgr.version()]);
     GetCreateArg::InstallAtOffset(sGetCreateArgOffsets[gDrawMgr.version()]);

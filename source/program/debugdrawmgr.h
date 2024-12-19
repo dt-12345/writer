@@ -3,6 +3,8 @@
 #include "nn.hpp"
 #include "utils.hpp"
 
+#include "offsets.h"
+
 #include <common/aglDrawContext.h>
 #include <gfx/seadColor.h>
 #include <gfx/seadPrimitiveRenderer.h>
@@ -47,29 +49,33 @@ using SetProjectionFunc = void (sead::PrimitiveDrawer*, sead::Projection*);
 using SetCameraFunc = void (sead::PrimitiveDrawer*, sead::Camera*);
 using SetDrawCtxFunc = void (sead::PrimitiveDrawer*, sead::DrawContext*);
 
-extern BeginFunc* Begin;
-extern EndFunc* End;
-extern DrawQuadFunc* DrawQuad;
-extern DrawQuad2Func* DrawQuad2;
-extern DrawBoxFunc* DrawBox;
-extern DrawWireCubeFunc* DrawWireCube;
-extern DrawLineFunc* DrawLine;
-extern DrawSphere4x8Func* DrawSphere4x8;
-extern DrawSphere8x16Func* DrawSphere8x16;
-extern DrawDisk32Func* DrawDisk32;
-extern DrawCircle32Func* DrawCircle32;
-extern DrawCylinder16Func* DrawCylinder16;
-extern DrawCylinder32Func* DrawCylinder32;
-extern SetModelMtxFunc* SetModelMtx;
-extern SetProjectionFunc* SetProjection;
-extern SetCameraFunc* SetCamera;
-extern SetDrawCtxFunc* SetDrawCtx;
-
 class DebugDrawMgr {
 public:
     void initialize(int version) {
         mGameVersion = version;
         nn::os::InitializeMutex(&mInitMutex, true, 0);
+
+        #define OFFSET(offsets) exl::util::modules::GetTargetOffset((offsets)[this->version()])
+
+        Begin = reinterpret_cast<BeginFunc*>(OFFSET(sBeginOffsets));
+        End = reinterpret_cast<EndFunc*>(OFFSET(sEndOffsets));
+        DrawQuad = reinterpret_cast<DrawQuadFunc*>(OFFSET(sDrawQuadOffsets));
+        DrawQuad2 = reinterpret_cast<DrawQuad2Func*>(OFFSET(sDrawQuad2Offsets));
+        DrawBox = reinterpret_cast<DrawBoxFunc*>(OFFSET(sDrawBoxOffsets));
+        DrawWireCube = reinterpret_cast<DrawWireCubeFunc*>(OFFSET(sDrawWireCubeOffsets));
+        DrawLine = reinterpret_cast<DrawLineFunc*>(OFFSET(sDrawLineOffsets));
+        DrawSphere4x8 = reinterpret_cast<DrawSphere4x8Func*>(OFFSET(sDrawSphere4x8Offsets));
+        DrawSphere8x16 = reinterpret_cast<DrawSphere8x16Func*>(OFFSET(sDrawSphere8x16Offsets));
+        DrawDisk32 = reinterpret_cast<DrawDisk32Func*>(OFFSET(sDrawDisk32Offsets));
+        DrawCircle32 = reinterpret_cast<DrawCircle32Func*>(OFFSET(sDrawCircle32Offsets));
+        DrawCylinder16 = reinterpret_cast<DrawCylinder16Func*>(OFFSET(sDrawCylinder16Offsets));
+        DrawCylinder32 = reinterpret_cast<DrawCylinder32Func*>(OFFSET(sDrawCylinder32Offsets));
+        SetModelMtx = reinterpret_cast<SetModelMtxFunc*>(OFFSET(sSetModelMtxOffsets));
+        SetProjection = reinterpret_cast<SetProjectionFunc*>(OFFSET(sSetProjectionOffsets));
+        SetCamera = reinterpret_cast<SetCameraFunc*>(OFFSET(sSetCameraOffsets));
+        SetDrawCtx = reinterpret_cast<SetDrawCtxFunc*>(OFFSET(sSetDrawCtxOffsets));
+
+        #undef OFFSET
     }
 
     inline bool createDebugRenderer() {
@@ -115,10 +121,9 @@ public:
     inline const bool isDrawUI3D0() const { return mDrawUI3D0; }
 
     void setupRenderer(const agl::lyr::RenderInfo& info) {
-        sead::Matrix34f mtx(1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f);
         setProjection(info.projection);
         setCamera(info.camera);
-        setModelMtx(&mtx);
+        setModelMtx(&mMatrix);
         setDrawCtx(dynamic_cast<sead::DrawContext*>(info.draw_ctx));
     }
 
@@ -195,6 +200,24 @@ private:
     bool mDrawTool2DSuper = true;
     bool mDrawMain3D0 = true;
     bool mDrawUI3D0 = true;
-};
 
-#define OFFSET(offsets) exl::util::modules::GetTargetOffset((offsets)[gDrawMgr.version()])
+    BeginFunc* Begin;
+    EndFunc* End;
+    DrawQuadFunc* DrawQuad;
+    DrawQuad2Func* DrawQuad2;
+    DrawBoxFunc* DrawBox;
+    DrawWireCubeFunc* DrawWireCube;
+    DrawLineFunc* DrawLine;
+    DrawSphere4x8Func* DrawSphere4x8;
+    DrawSphere8x16Func* DrawSphere8x16;
+    DrawDisk32Func* DrawDisk32;
+    DrawCircle32Func* DrawCircle32;
+    DrawCylinder16Func* DrawCylinder16;
+    DrawCylinder32Func* DrawCylinder32;
+    SetModelMtxFunc* SetModelMtx;
+    SetProjectionFunc* SetProjection;
+    SetCameraFunc* SetCamera;
+    SetDrawCtxFunc* SetDrawCtx;
+
+    sead::Matrix34f mMatrix{1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f};
+};
