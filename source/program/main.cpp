@@ -36,7 +36,7 @@ GetResidentActorMgr* getResidentActorMgr = nullptr;
 void drawBoxBorders(const sead::BoundBox3f& bounds) {
     const sead::Vector3f max = bounds.getMax();
     const sead::Vector3f min = bounds.getMin();
-    sead::Color4f color{1.f, 0.f, 0.f, 1.f};
+    sead::Color4f color{0.9f, 0.5f, 0.7f, 1.f};
     // draw line seems to not work hmmm
     // I'll figure this out later
     gDrawMgr.drawLine(sead::Vector3f(min.x, min.y, min.z), sead::Vector3f(max.x, min.y, min.z), color, color);
@@ -76,16 +76,15 @@ void drawMain3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
     sead::Matrix34f mtx = player->getTransform();
     const sead::BoundBox3f aabb = player->getAABB();
 
-    float radius = aabb.getSizeX() > aabb.getSizeZ() ? aabb.getSizeX() : aabb.getSizeZ();
-    radius *= 0.5f;
+    float radius = aabb.getSizeX() > aabb.getSizeZ() ? aabb.getSizeX() * 0.5f : aabb.getSizeZ() * 0.5f;
     float height = aabb.getSizeY();
-    sead::Color4f color{1.f, 0.f, 1.f, 1.f};
+    sead::Color4f color{0.45f, 0.1f, 0.87f, 0.1f};
 
     gDrawMgr.setupRenderer(info);
     gDrawMgr.begin();
     gDrawMgr.setModelMtx(&mtx);
-    // drawBoxBorders(aabb);
-    gDrawMgr.drawAxis(sead::Vector3f(0.f, 0.f, 0.f), 5.f);
+    drawBoxBorders(aabb);
+    gDrawMgr.drawDisk32(sead::Vector3f(0.f, 0.f, 0.f), 2.f, color, color);
     gDrawMgr.drawCylinder32(sead::Vector3f(0.f, height * 0.5f, 0.f), radius, height, color, color);
     gDrawMgr.end();
 }

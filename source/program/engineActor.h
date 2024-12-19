@@ -18,12 +18,7 @@ struct ActorBase {
     sead::BoundBox3f aabb;
 
     sead::Matrix34f getTransform() const {
-        sead::Matrix34f transform{};
-        transform.m[0][0] = rot.m[0][0]; transform.m[0][1] = rot.m[0][1]; transform.m[0][2] = rot.m[0][2];
-        transform.m[1][0] = rot.m[1][0]; transform.m[1][1] = rot.m[1][1]; transform.m[1][2] = rot.m[1][2];
-        transform.m[2][0] = rot.m[2][0]; transform.m[2][1] = rot.m[2][1]; transform.m[2][2] = rot.m[2][2];
-        transform.m[0][3] = pos.x; transform.m[1][3] = pos.y; transform.m[2][3] = pos.z;
-        return transform;
+        return sead::Matrix34f(rot, pos);
     }
 
     const sead::BoundBox3f& getAABB() const { return aabb; } 
