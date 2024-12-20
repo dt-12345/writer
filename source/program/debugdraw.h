@@ -14,4 +14,4 @@
 void initDebugDrawer();
 sead::TextWriter initializeTextWriter(const agl::lyr::RenderInfo&);
 
-static DebugDrawMgr gDrawMgr;
+extern DebugDrawMgr gDrawMgr;

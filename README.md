@@ -19,5 +19,3 @@ romfs
         └───primitive_renderer
                 primitive_drawer_nvn_shader.bin
 ```
-
-Note that there seems to be some issue with Recall causing the entire font atlas to be displayed while recalling something - might be something to do with the Recall shader?
