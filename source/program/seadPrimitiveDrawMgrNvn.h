@@ -77,8 +77,8 @@ private:
     nvn::Buffer mCylinder16IndexBuffer;
     nvn::Buffer mCylinder32VertexBuffer;
     nvn::Buffer mCylinder32IndexBuffer;
-    nvn::Buffer _720;
-    void* _750;
+    nvn::Buffer mUniformBuffer;
+    void* mpUBOMemory;
     u8 _758;
     int _75C;
     int mMemoryPoolSize;
