@@ -53,7 +53,6 @@ class DebugDrawMgr {
 public:
     void initialize(int version) {
         mGameVersion = version;
-        nn::os::InitializeMutex(&mInitMutex, true, 0);
 
         #define OFFSET(offsets) exl::util::modules::GetTargetOffset((offsets)[this->version()])
 
@@ -78,31 +77,17 @@ public:
         #undef OFFSET
     }
 
-    inline bool createDebugRenderer() {
-        if (isInitFont() && isInitPrimitiveRenderer()) return true;
-        nn::os::LockMutex(&mInitMutex);
-        if (!isInitFont() || !isInitPrimitiveRenderer()) {
-            char buf[0x40];
-            PRINT("Debug renderer is null, attempting to initialize")
-            mCreateDebugRenderer(mHeap, mCreateArg);
-        }
-        nn::os::UnlockMutex(&mInitMutex);
-        return isInitFont() && isInitPrimitiveRenderer();
-    }
-
     const inline int version() const { return mGameVersion; }
-    const inline bool isInitFont() const { return *mDefaultFont != nullptr; }
-    const inline bool isInitPrimitiveRenderer() const { return *mPrimitiveRenderer != nullptr; }
 
     const inline sead::FontBase* getFont() const { return *mDefaultFont; }
     inline sead::PrimitiveRenderer* getPrimitiveRenderer() { return *mPrimitiveRenderer; }
     inline sead::PrimitiveDrawer* getPrimitiveDrawer() { return getPrimitiveRenderer()->getPrimitiveDrawer(); }
 
+    inline sead::Heap* getHeap() const { return mHeap; }
+    
     inline void setHeap(sead::Heap* heap) { mHeap = heap; }
     inline void setFont(sead::FontBase** font) { mDefaultFont = font; }
     inline void setPrimitiveRenderer(sead::PrimitiveRenderer** renderer) { mPrimitiveRenderer = renderer; }
-    inline void setCreateCallback(void (*callback)(sead::Heap*, CreateArg&)) { mCreateDebugRenderer = callback; }
-    inline void initCreateArg(int a, int b) { mCreateArg.value0 = a; mCreateArg.value1 = b; }
 
     inline void setDrawDebug(bool b) { mDrawDebug = b; }
     inline void setDrawUI2D(bool b) { mDrawUI2D = b; }
@@ -187,11 +172,8 @@ public:
 
 private:
     sead::Heap* mHeap = nullptr;
-    CreateArg mCreateArg{};
-    nn::os::MutexType mInitMutex;
     sead::FontBase** mDefaultFont = nullptr;
     sead::PrimitiveRenderer** mPrimitiveRenderer = nullptr;
-    void (*mCreateDebugRenderer)(sead::Heap*, CreateArg&);
     int mGameVersion;
     bool mDrawDebug = true;
     bool mDrawUI2D = true;

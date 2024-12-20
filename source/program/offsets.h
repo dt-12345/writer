@@ -5,16 +5,16 @@
 // general
 
 static constexpr u64 sStealHeapOffsets[6] = {
-    0x008111a8, 0x0083c2fc, 0x00713b74, 0x00802bfc, 0x007a3428, 0x007f61d0
+    0x00810c68, 0x0083bcf0, 0x00713568, 0x008025f0, 0x007a2e1c, 0x007f5bc4
 };
 
-static constexpr u64 sGetCreateArgOffsets[6] = {
+static constexpr u64 sSetDebugHeapOffsets[6] = {
     0x00ea5118, 0x00adb7cc, 0x00b03db8, 0x00a9c6b4, 0x00ab0150, 0x00a9123c
 };
 
-static constexpr u64 sCreateDebugRendererOffsets[6] = {
-    0x00ea6834, 0x00adcef4, 0x00b054d8, 0x00a9dddc, 0x00ab1870, 0x00a92964
-};
+// static constexpr u64 sCreateDebugRendererOffsets[6] = {
+//     0x00ea6834, 0x00adcef4, 0x00b054d8, 0x00a9dddc, 0x00ab1870, 0x00a92964
+// };
 
 static constexpr u64 sEnableDebugDrawOffsets[6] = {
     0x00857f28, 0x0083f5b8, 0x00784e90, 0x00808478, 0x007d1fb0, 0x00818340

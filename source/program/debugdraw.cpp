@@ -10,24 +10,18 @@ DebugDrawMgr gDrawMgr;
 
 HOOK_DEFINE_INLINE(StealHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[gDrawMgr.version() == 0 ? 19 : 22]));
-        // I want to initialize the font + renderer here but for some reason the text will not render if I do?
+        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[2]));
     }
 };
 
-HOOK_DEFINE_INLINE(GetCreateArg) {
+HOOK_DEFINE_INLINE(SetDebugHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        gDrawMgr.initCreateArg(reinterpret_cast<CreateArg*>(ctx->X[1])->value0, reinterpret_cast<CreateArg*>(ctx->X[1])->value1);
+        ctx->X[0] = reinterpret_cast<u64>(gDrawMgr.getHeap());
     }
 };
 
 HOOK_DEFINE_INLINE(EnableDebugDraw) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        if (!gDrawMgr.createDebugRenderer()) {
-            char buf[0x20];
-            PRINT("Failed to init default font")
-            return;
-        }
         if (gDrawMgr.isDrawDebug()) {
             ctx->W[8] = 0x28;
         } else {
@@ -72,15 +66,14 @@ void initDebugDrawer() {
     TextWriterPrintf = reinterpret_cast<PrintfFunc*>(OFFSET(sTextWriterPrintfOffsets));
     TextWriterCtor = reinterpret_cast<Ctor*>(OFFSET(sTextWriterCtorOffsets));
     TextWriterSetupGraphics = reinterpret_cast<SetupGraphics*>(OFFSET(sTextWriterSetupGraphicsOffsets));
-    gDrawMgr.setCreateCallback(reinterpret_cast<CreateFunc*>(OFFSET(sCreateDebugRendererOffsets)));
-    gDrawMgr.setFont(reinterpret_cast<sead::FontBase**>(OFFSET(sDefaultFontOffsets)));
     gDrawMgr.setPrimitiveRenderer(reinterpret_cast<sead::PrimitiveRenderer**>(OFFSET(sPrimitiveRendererOffsets)));
     #undef OFFSET
 
-    StealHeap::InstallAtOffset(sStealHeapOffsets[gDrawMgr.version()]);
-    GetCreateArg::InstallAtOffset(sGetCreateArgOffsets[gDrawMgr.version()]);
     EnableDebugDraw::InstallAtOffset(sEnableDebugDrawOffsets[gDrawMgr.version()]);
     DebugDraw::InstallAtOffset(sDebugDrawOffsets[gDrawMgr.version()]);
+
+    StealHeap::InstallAtOffset(sStealHeapOffsets[gDrawMgr.version()]);
+    SetDebugHeap::InstallAtOffset(sSetDebugHeapOffsets[gDrawMgr.version()]);
 
     PRINT("Initialized");
     
