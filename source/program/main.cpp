@@ -184,10 +184,43 @@ void drawMain3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
     gDrawMgr.setupRenderer(info);
     gDrawMgr.begin();
     gDrawMgr.setModelMtx(&mtx);
-    gDrawMgr.drawCylinder32(sead::Vector3f(0.f, length * 0.5f + 0.2f, -0.7f), radius, length, color, color);
-    gDrawMgr.drawSphere8x16(sead::Vector3f(-radius, 0.2f, -0.7f), radius, color, color);
-    gDrawMgr.drawSphere8x16(sead::Vector3f(radius, 0.2f, -0.7f), radius, color, color);
-    gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, length + 0.2f, -0.7f), radius, color, color);
+    const sead::Color4f actorPosColor = sead::Color4f(1.0f, 0.f, 0.f, 0.1f);
+    gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, 0.f, 0.f), radius, actorPosColor, actorPosColor);
+    auto physCmp = player->getPhysicsComponent();
+    if (physCmp && physCmp->controllerSet && physCmp->controllerSet->mainRigidBody) {
+        gDrawMgr.setModelMtx(&physCmp->controllerSet->mainRigidBody->lastTransform);
+        const sead::Color4f rigidBodyPosColor = sead::Color4f(0.0f, 1.f, 0.f, 0.1f);
+        const sead::Color4f rigidBodyPrevPosColor = sead::Color4f(0.0f, 1.f, 1.f, 0.1f);
+        const sead::Color4f rigidBodyNextPosColor = sead::Color4f(1.0f, 1.f, 0.f, 0.1f);
+        gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, 0.f, 0.f), radius + 0.1f, rigidBodyPosColor, rigidBodyPosColor);
+        gDrawMgr.setModelMtx(&physCmp->controllerSet->mainRigidBody->prevTransform);
+        gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, 0.f, 0.f), radius + 0.15f, rigidBodyPrevPosColor, rigidBodyPrevPosColor);
+        sead::Matrix34f nextTransform;
+        if (physCmp->controllerSet->mainRigidBody->changeRequest && (physCmp->controllerSet->mainRigidBody->changeRequest->flags >> 6 & 1) == 0) {
+            nextTransform = physCmp->controllerSet->mainRigidBody->changeRequest->nextTransform;
+        } else {
+            nextTransform = physCmp->controllerSet->mainRigidBody->lastTransform;
+        }
+        gDrawMgr.setModelMtx(&nextTransform);
+        gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, 0.f, 0.f), radius + 0.2f, rigidBodyNextPosColor, rigidBodyNextPosColor);
+
+    } else {
+        char buf[0x10];
+        PRINT("phys null")
+    }
+    auto modelCmp = player->getModelComponent();
+    if (modelCmp && modelCmp->model) {
+        gDrawMgr.setModelMtx(&modelCmp->model->modelMtx);
+        const sead::Color4f modelPosColor = sead::Color4f(0.0f, 0.f, 1.f, 0.1f);
+        gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, 0.f, 0.f), radius + 0.3f, modelPosColor, modelPosColor);
+    } else {
+        char buf[0x10];
+        PRINT("model null")
+    }
+    // gDrawMgr.drawCylinder32(sead::Vector3f(0.f, length * 0.5f + 0.2f, -0.7f), radius, length, color, color);
+    // gDrawMgr.drawSphere8x16(sead::Vector3f(-radius, 0.2f, -0.7f), radius, color, color);
+    // gDrawMgr.drawSphere8x16(sead::Vector3f(radius, 0.2f, -0.7f), radius, color, color);
+    // gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, length + 0.2f, -0.7f), radius, color, color);
     gDrawMgr.end();
 }
 

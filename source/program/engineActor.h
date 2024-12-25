@@ -1,12 +1,59 @@
 #pragma once
 
 #include "types.h"
+#include <container/seadPtrArray.h>
 #include <math/seadVector.h>
 #include <math/seadMatrix.h>
 #include <math/seadBoundBox.h>
+#include <prim/seadSafeString.h>
+
+struct ChangeRequest {
+    char _00[0x8];
+    sead::Matrix34f nextTransform;
+    char _38[0x9c];
+    u32 flags;
+};
+
+struct RigidBody {
+    char _00[0x60];
+    ChangeRequest* changeRequest;
+    char _68[0x30];
+    sead::Matrix34f lastTransform;
+    sead::Matrix34f prevTransform;
+};
+static_assert(offsetof(RigidBody, lastTransform) == 0x98);
+
+struct ControllerSet {
+    char _00[0x150];
+    RigidBody* mainRigidBody;
+};
+
+struct Component {
+    void* __vtbl;
+    sead::SafeString refPath;
+};
+
+struct PhysicsComponent : public Component {
+    char _10[0x10];
+    ControllerSet* controllerSet;
+};
+static_assert(offsetof(PhysicsComponent, controllerSet) == 0x20);
+
+struct Model {
+    char _00[0x1f8];
+    sead::Matrix34f modelMtx;
+};
+
+struct ModelComponent : public Component {
+    char _10[0x18];
+    Model* model;
+};
+static_assert(offsetof(ModelComponent, model) == 0x28);
 
 struct ActorBase {
-    char _00[0x2b4];
+    char _00[0x220];
+    sead::PtrArray<Component> components;
+    char _0230[0x84];
     sead::Vector3f pos;
     sead::Matrix33f rot;
     sead::Vector3f scale;
@@ -19,6 +66,14 @@ struct ActorBase {
 
     sead::Matrix34f getTransform() const {
         return sead::Matrix34f(rot, pos);
+    }
+
+    PhysicsComponent* getPhysicsComponent() const {
+        return reinterpret_cast<PhysicsComponent*>(components[0xa]);
+    }
+
+    ModelComponent* getModelComponent() const {
+        return reinterpret_cast<ModelComponent*>(components[2]);
     }
 
     const sead::BoundBox3f& getAABB() const { return aabb; } 
