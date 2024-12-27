@@ -9,6 +9,12 @@
 
 namespace sead {
 
+struct Vertex {
+    Vector3f pos;
+    Vector2f uv;
+    Color4f color;
+};
+
 class PrimitiveDrawMgrNvn : public PrimitiveRendererBase {
 public:
     void prepareFromBinaryImpl(Heap* heap, const void* bin_data, u32 bin_size) override;
@@ -50,8 +56,7 @@ private:
     nvn::Program mProgram;
     nvn::Buffer mBuffer;
     nvn::MemoryPool mMemoryPool;
-    nvn::VertexAttribState mVertexAttribState0;
-    nvn::VertexAttribState mVertexAttribState1;
+    nvn::VertexAttribState mVertexAttribStates[3];
     nvn::VertexStreamState mVertexStreamState;
     nvn::MemoryPool mQuadMemoryPool;
     nvn::Buffer mQuadVertexBuffer;

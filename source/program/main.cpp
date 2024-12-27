@@ -196,7 +196,7 @@ void drawMain3D0(agl::lyr::Layer* layer, const agl::lyr::RenderInfo& info) {
         gDrawMgr.setModelMtx(&physCmp->controllerSet->mainRigidBody->prevTransform);
         gDrawMgr.drawSphere8x16(sead::Vector3f(0.f, 0.f, 0.f), radius + 0.15f, rigidBodyPrevPosColor, rigidBodyPrevPosColor);
         sead::Matrix34f nextTransform;
-        if (physCmp->controllerSet->mainRigidBody->changeRequest && (physCmp->controllerSet->mainRigidBody->changeRequest->flags >> 6 & 1) == 0) {
+        if (physCmp->controllerSet->mainRigidBody->changeRequest && (physCmp->controllerSet->mainRigidBody->changeRequest->flags >> 6 & 1) != 0) {
             nextTransform = physCmp->controllerSet->mainRigidBody->changeRequest->nextTransform;
         } else {
             nextTransform = physCmp->controllerSet->mainRigidBody->lastTransform;

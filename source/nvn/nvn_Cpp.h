@@ -1519,7 +1519,7 @@ public:
 
 class VertexAttribState {
 protected:
-    char reserved[8];
+    char reserved[4];
 
 public:
     VertexAttribState& SetDefaults();
