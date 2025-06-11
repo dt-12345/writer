@@ -3,3 +3,4 @@ deploy/*
 *.elf
 
 .vscode/*
+.vscode/settings.json

@@ -10,7 +10,7 @@ DebugDrawMgr gDrawMgr;
 
 HOOK_DEFINE_INLINE(StealHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[2]));
+        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[gDrawMgr.version() == 0 ? 19 : 22]));
     }
 };
 
@@ -65,6 +65,7 @@ void initDebugDrawer() {
     TextWriterPrintf = reinterpret_cast<PrintfFunc*>(OFFSET(sTextWriterPrintfOffsets));
     TextWriterCtor = reinterpret_cast<Ctor*>(OFFSET(sTextWriterCtorOffsets));
     TextWriterSetupGraphics = reinterpret_cast<SetupGraphics*>(OFFSET(sTextWriterSetupGraphicsOffsets));
+    gDrawMgr.setPrimitiveRenderer(reinterpret_cast<sead::PrimitiveRenderer**>(OFFSET(sPrimitiveRendererOffsets)));
     #undef OFFSET
 
     EnableDebugDraw::InstallAtOffset(sEnableDebugDrawOffsets[gDrawMgr.version()]);
