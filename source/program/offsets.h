@@ -5,7 +5,8 @@
 // general
 
 static constexpr u64 sStealHeapOffsets[6] = {
-    0x00810c68, 0x0083bcf0, 0x00713568, 0x008025f0, 0x007a2e1c, 0x007f5bc4
+    // 0x00810c68, 0x0083bcf0, 0x00713568, 0x008025f0, 0x007a2e1c, 0x007f5bc4
+    0x008111a8, 0x0083c2fc, 0x00713b74, 0x00802bfc, 0x007a3428, 0x007f61d0
 };
 
 static constexpr u64 sSetDebugHeapOffsets[6] = {

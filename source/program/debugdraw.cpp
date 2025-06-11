@@ -10,7 +10,7 @@ DebugDrawMgr gDrawMgr;
 
 HOOK_DEFINE_INLINE(StealHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[2]));
+        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[gDrawMgr.version() == 0 ? 19 : 22]));
     }
 };
 
