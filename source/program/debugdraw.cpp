@@ -8,15 +8,12 @@
 PrintfFunc* TextWriterPrintf;
 DebugDrawMgr gDrawMgr;
 
-HOOK_DEFINE_INLINE(StealHeap) {
-    static void Callback(exl::hook::InlineCtx* ctx) {
-        gDrawMgr.setHeap(reinterpret_cast<sead::Heap*>(ctx->X[gDrawMgr.version() == 0 ? 19 : 22]));
-    }
-};
+using GetHeap = sead::Heap* (bool thread_safe);
+GetHeap* getVirtualAddressHeap = nullptr;
 
 HOOK_DEFINE_INLINE(SetDebugHeap) {
     static void Callback(exl::hook::InlineCtx* ctx) {
-        ctx->X[0] = reinterpret_cast<u64>(gDrawMgr.getHeap());
+        ctx->X[0] = reinterpret_cast<u64>(getVirtualAddressHeap(true));
     }
 };
 
@@ -62,6 +59,7 @@ void initDebugDrawer() {
     using SetupGraphics = void (sead::DrawContext*);
 
     #define OFFSET(offsets) exl::util::modules::GetTargetOffset((offsets)[gDrawMgr.version()])
+    getVirtualAddressHeap = reinterpret_cast<GetHeap*>(OFFSET(sGetVirtualAddressHeapOffsets));
     TextWriterPrintf = reinterpret_cast<PrintfFunc*>(OFFSET(sTextWriterPrintfOffsets));
     TextWriterCtor = reinterpret_cast<Ctor*>(OFFSET(sTextWriterCtorOffsets));
     TextWriterSetupGraphics = reinterpret_cast<SetupGraphics*>(OFFSET(sTextWriterSetupGraphicsOffsets));
@@ -71,7 +69,6 @@ void initDebugDrawer() {
     EnableDebugDraw::InstallAtOffset(sEnableDebugDrawOffsets[gDrawMgr.version()]);
     DebugDraw::InstallAtOffset(sDebugDrawOffsets[gDrawMgr.version()]);
 
-    StealHeap::InstallAtOffset(sStealHeapOffsets[gDrawMgr.version()]);
     SetDebugHeap::InstallAtOffset(sSetDebugHeapOffsets[gDrawMgr.version()]);
 
     PRINT("Initialized");
